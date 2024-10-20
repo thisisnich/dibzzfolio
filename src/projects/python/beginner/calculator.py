@@ -13,7 +13,7 @@ def sub(x, y):
 def mult(x, y):
     return x*y
 def div(x, y):
-    return float(x)/y
+    return x/y
 def exp(x, y):
     return x**y
 def root(x, y):
@@ -35,11 +35,11 @@ while True:
     elif answer ==2:
         print(mult(num1,num2))
     elif answer == 3:
-        div(num1, num2)
+        print(div(num1, num2))
     elif answer == 4:
-        exp(num1,num2)
+        print(exp(num1,num2))
     elif answer == 5:
-        print(root(num1,num2))
+        print(print(root(num1,num2)))
     elif answer==6:
         print('exiting calculator...')
         break
