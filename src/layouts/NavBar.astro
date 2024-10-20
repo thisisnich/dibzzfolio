@@ -1,0 +1,84 @@
+---
+const links = [
+  {
+    href: "/",
+    text: "Home",
+  },
+  {
+    href: "https://dibzzwallpaper.netlify.app/",
+    text: "Wallpaper",
+  },
+  {
+    href: "/python",
+    text: "Python",
+  },
+  {
+    href: "/",
+    text: "Home",
+  },
+  {
+    href: "/",
+    text: "Home",
+  },
+  {
+    href: "/",
+    text: "Home",
+  },
+];
+
+const pathname = new URL(Astro.request.url).pathname;
+
+const activeClass = `block py-2 px-3 text-gray-600 bg-gray-800 rounded md:bg-transparent md:p-0 font-bold`;
+const nonActiveClass = `block py-2 px-3 text-white bg-gray-800 rounded md:bg-transparent md:p-0 font-bold`;
+---
+
+<nav class="px-4 lg:px-6">
+  <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto py-4">
+    <a href="/" class="flex items-center">
+        <svg class="border-red-50 border-solid border-spacing-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 00">
+            <defs>
+              <style>
+                .cls-1 {
+                  fill: white;
+                }
+              </style>
+            </defs>
+            <g id="Layer_1-2" data-name="Layer_1">
+              <g>
+                <path class="cls-1" d="M27.91,0v6.3h4.17s8.51,1.57,8.51,10.36-9.02,10.74-9.02,10.74h-3.66v5.62h4.09s14.21-2.34,14.21-16.36S32.51,0,32.51,0h-4.6Z"/>
+                <polygon class="cls-1" points="25.36 22.3 25.36 0 19.15 0 19.15 15.49 25.36 22.3"/>
+                <polyline class="cls-1" points="22.81 33.02 25.36 33.02 25.36 27.3 2.13 0 0 0 0 6.13"/>
+                <polygon class="cls-1" points="0 10.38 0 33.02 5.62 33.02 5.62 16.66 0 10.38"/>
+              </g>
+            </g>
+          </svg>
+    </a>
+    <button
+      data-collapse-toggle="mobile-menu"
+      type="button"
+      class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
+      aria-controls="navbar-default"
+      aria-expanded="false"
+    >
+      <span class="sr-only">Open main menu</span>
+      <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"></path>
+      </svg>
+    </button>
+    <div class="hidden w-full md:block md:w-auto" id="mobile-menu">
+      <ul
+        class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 bg-transparent"
+      >
+        {
+          links.map(({ href, text }) => (
+            <li>
+              <a class={pathname === href ? activeClass : nonActiveClass} {href} aria-current="page">
+                {text}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</nav>
