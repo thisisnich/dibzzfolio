@@ -1,7 +1,8 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Card from "../../components/Card.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
 import { getCollection } from "astro:content";
+import Pro from "./pro.astro";
 const projects = await getCollection('beginnerPython')
 ---
 <Layout title = "Python">
@@ -12,7 +13,7 @@ const projects = await getCollection('beginnerPython')
         <ul role="list" class="py-5 px-20 grid grid-cols-3 gap-4 place-items-stretch">
         {projects.map((c) =>
             
-            <Card
+            <ProjectCard
             href={`https://github.com/thisisnich/dibzzpython/blob/main/beginner/${c.data.file_name}`}
             title={c.data.title}
             body={c.data.body} />)}

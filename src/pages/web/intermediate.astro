@@ -1,6 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Card from "../../components/Card.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
 import { getCollection } from "astro:content";
 const projects = await getCollection('intermediateWeb')
 ---
@@ -12,7 +12,7 @@ const projects = await getCollection('intermediateWeb')
         <ul role="list" class="py-5 px-20 grid auto-cols-max gap-4 place-items-stretch">
         {projects.map((c) =>
             
-            <Card
+            <ProjectCard
             href={c.data.URL}
             title={c.data.title}
             body={c.data.body} />)}
