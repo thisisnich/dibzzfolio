@@ -2,18 +2,18 @@
 import Layout from "../../layouts/Layout.astro";
 import Card from "../../components/Card.astro";
 import { getCollection } from "astro:content";
-const projects = await getCollection('beginnerPython')
+const projects = await getCollection('intermediateWeb')
 ---
-<Layout title = "Python">
+<Layout title = "Intermediate">
     <main>
         
         <h1 class="text-white text-center font-thin text-2xl">Welcome to my python projects</h1>
         <p class="text-white font-thin text-lg px-20 py-10">I do stuff in python and here are some projects</p>
-        <ul role="list" class="py-5 px-20 grid grid-cols-3 gap-4 place-items-stretch">
+        <ul role="list" class="py-5 px-20 grid auto-cols-max gap-4 place-items-stretch">
         {projects.map((c) =>
             
             <Card
-            href={`https://github.com/thisisnich/dibzzpython/blob/main/beginner/${c.data.file_name}`}
+            href={c.data.URL}
             title={c.data.title}
             body={c.data.body} />)}
         </ul>

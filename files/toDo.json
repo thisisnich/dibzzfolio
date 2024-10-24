@@ -1,0 +1,22 @@
+[
+    {
+        "task": "Jeff",
+        "done": true
+    },
+    {
+        "task": "Check if json saving works",
+        "done": false
+    },
+    {
+        "task": "Fix json if it doest work",
+        "done": false
+    },
+    {
+        "task": "Write code w gui",
+        "done": false
+    },
+    {
+        "task": "write w telebot",
+        "done": false
+    }
+]
