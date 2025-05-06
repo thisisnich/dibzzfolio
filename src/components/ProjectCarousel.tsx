@@ -35,18 +35,30 @@ const ProjectCarouselWithTabs = ({ categories }: ProjectCarouselWithTabsProps) =
       </div>
 
       {/* Carousel */}
-      <Swiper
-        spaceBetween={10}
-        slidesPerView={1}
-        navigation
-        modules={[Navigation]}
-      >
-        {activeCategory.screenshots.map((src, index) => (
-          <SwiperSlide key={index}>
-            <img src={src} alt={`${activeCategory.label} Screenshot ${index + 1}`} />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      <div className="relative">
+        <Swiper
+          spaceBetween={10}
+          slidesPerView={1}
+          navigation={{
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          }}
+          modules={[Navigation]}
+          className="relative"
+        >
+          {activeCategory.screenshots.map((src, index) => (
+            <SwiperSlide key={index}>
+              <img 
+                src={src} 
+                alt={`${activeCategory.label} Screenshot ${index + 1}`}
+                className="w-full h-auto object-contain"
+              />
+            </SwiperSlide>
+          ))}
+          <div className="swiper-button-prev absolute left-2 top-1/2 z-10 bg-gray-800 bg-opacity-60 rounded-full p-3 text-white cursor-pointer"></div>
+          <div className="swiper-button-next absolute right-2 top-1/2 z-10 bg-gray-800 bg-opacity-60 rounded-full p-3 text-white cursor-pointer"></div>
+        </Swiper>
+      </div>
     </div>
   );
 };
