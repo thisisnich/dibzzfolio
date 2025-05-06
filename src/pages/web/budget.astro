@@ -343,7 +343,7 @@ const contributions = await fetchGitHubStats();
             <h2 class="text-2xl font-bold mb-4">Project Showcase</h2>
             <div class="bg-gray-800 p-4 rounded-lg shadow-lg">                
                 <!-- Screenshot Placeholder - Replace with actual carousel component -->
-                <ProjectCarouselWithTabs categories={categories} />    
+                <ProjectCarouselWithTabs categories={categories} client:load/>    
                 
                 {/* New feature preview section */}
                 <div class="mt-6 p-4 bg-gray-700 rounded-lg">

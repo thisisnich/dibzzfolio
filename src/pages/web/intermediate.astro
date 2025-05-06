@@ -13,6 +13,7 @@ const projects = await getCollection('intermediateWeb')
         {projects.map((c) =>
             
             <ProjectCard
+            sameTab ={c.data.sameTab? true : false}
             href={c.data.URL}
             title={c.data.title}
             body={c.data.body} />)}
