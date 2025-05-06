@@ -5,9 +5,23 @@ const beginnerPythonCollection = defineCollection({
     schema: z.object({
         file_name: z.string(),
         title: z.string(),
-        body: z.string()
+        body: z.string(),
+        sameTab: z.optional(z.boolean()),
+
     })
 })
+
+const intermediatePythonCollection = defineCollection({
+    type: 'content',
+    schema: z.object({
+        file_name: z.string(),
+        title: z.string(),
+        body: z.string(),
+        sameTab: z.optional(z.boolean()),
+
+    })
+})
+
 
 const intermediateWebCollection = defineCollection({
     type: 'content',
@@ -20,5 +34,6 @@ const intermediateWebCollection = defineCollection({
 })
 export const collections = {
     beginnerPython: beginnerPythonCollection,
-    intermediateWeb: intermediateWebCollection
+    intermediateWeb: intermediateWebCollection,
+    intermediatePython: intermediatePythonCollection,
 }
