@@ -1,16 +1,18 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import type { CollectionEntry } from "astro:content";
+const projects = await getCollection('intermediatePython') as CollectionEntry<'intermediateWeb'>[];
 import ProjectCard from "../../components/ProjectCard.astro";
 import { getCollection } from "astro:content";
-const projects = await getCollection('intermediatePython')
+
 
 ---
 <Layout title="Intermediate">
     <main>
         <h1 class="text-white text-center font-thin text-2xl">Intermediate Python Projects</h1>
         <p class="text-white font-thin text-lg px-20 py-10">slightly more advanced stuff</p>
-        <ul role="list" class="py-5 px-20 grid grid-cols-3 gap-4 place-items-stretch">
-        {projects.map((c) =>
+        <ul role="list" class="grid gap-4 place-items-stretch grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-5 md:px-20">
+            {projects.map((c) =>
             
             <ProjectCard
             href={`https://github.com/thisisnich/dibzzpython/blob/main/beginner/${c.data.file_name}`}
