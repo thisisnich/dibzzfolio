@@ -7,12 +7,13 @@ const projects = await getCollection('intermediateWeb')
 <Layout title = "Intermediate">
     <main>
         
-        <h1 class="text-white text-center font-thin text-2xl">Welcome to my python projects</h1>
-        <p class="text-white font-thin text-lg px-20 py-10">I do stuff in python and here are some projects</p>
+        <h1 class="text-white text-center font-thin text-2xl">Welcome to my web projects</h1>
+        <p class="text-white font-thin text-lg px-20 py-10">I do stuff in with react and some backend services</p>
         <ul role="list" class="py-5 px-20 grid auto-cols-max gap-4 place-items-stretch">
         {projects.map((c) =>
             
             <ProjectCard
+            sameTab ={c.data.sameTab? true : false}
             href={c.data.URL}
             title={c.data.title}
             body={c.data.body} />)}

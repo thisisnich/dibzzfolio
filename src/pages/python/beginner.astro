@@ -16,7 +16,9 @@ const projects = await getCollection('beginnerPython')
             <ProjectCard
             href={`https://github.com/thisisnich/dibzzpython/blob/main/beginner/${c.data.file_name}`}
             title={c.data.title}
-            body={c.data.body} />)}
+            body={c.data.body}
+            sameTab ={c.data.sameTab? true : false}
+            />)}
         </ul>
 
     </main>
