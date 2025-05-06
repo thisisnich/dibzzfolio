@@ -13,7 +13,7 @@ type ProjectCarouselWithTabsProps = {
   categories: Category[];
 };
 
-export const ProjectCarouselWithTabs = ({ categories }: ProjectCarouselWithTabsProps) => {
+const ProjectCarouselWithTabs = ({ categories }: ProjectCarouselWithTabsProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const activeCategory = categories[activeIndex];
 
@@ -50,3 +50,5 @@ export const ProjectCarouselWithTabs = ({ categories }: ProjectCarouselWithTabsP
     </div>
   );
 };
+
+export default ProjectCarouselWithTabs;
