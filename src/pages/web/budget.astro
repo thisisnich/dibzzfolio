@@ -1,5 +1,31 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import { ProjectCarouselWithTabs } from '../../components/ProjectCarousel'; 
+const categories = [
+  {
+    label: 'Light Mode',
+    screenshots: [
+      '/images/light/dashboard-light.png',
+      '/images/light/transactions-light.png',
+      '/images/light/budgets-light.png',
+      '/images/light/leaderboard-light.png',
+      '/images/light/allocations-light.png',
+      '/images/light/profile-light.png',
+    ]
+  },
+  {
+    label: 'Dark Mode',
+    screenshots: [
+    '/images/dark/dashboard-dark.png',
+    '/images/dark/transactions-dark.png',
+    '/images/dark/budgets-dark.png',
+    '/images/dark/leaderboard-dark.png',
+    '/images/dark/allocations-dark.png',
+    '/images/dark/profile-dark.png',
+
+    ]
+  },
+];
 const project = {
     title: "Budget Tracker",
     description: "A web application that helps users manage their finances by tracking income and expenses.",
@@ -293,6 +319,8 @@ const contributions = await fetchGitHubStats();
 
 <Layout title={project.title}>
     <main class="max-w-4xl mx-auto text-white px-4 sm:px-6 lg:px-8 py-10">
+      <img src="/images/light/light1.png" alt="test image" />
+
         <!-- Hero Section -->
         <section class="mb-12 text-center">
             <div class="relative inline-block mb-6">
@@ -313,50 +341,12 @@ const contributions = await fetchGitHubStats();
         <!-- Screenshots Carousel Section -->
         <section class="mb-12">
             <h2 class="text-2xl font-bold mb-4">Project Showcase</h2>
-            <div class="bg-gray-800 p-4 rounded-lg shadow-lg">
-                <!-- Tab System for Light/Dark Mode Screenshots -->
-                <div class="mb-4">
-                    <div class="flex border-b border-gray-700 mb-4">
-                        <button class="py-2 px-4 border-b-2 border-blue-500 text-blue-500">Light Mode</button>
-                        <button class="py-2 px-4 text-gray-400 hover:text-gray-200">Dark Mode</button>
-                    </div>
-                </div>
-                
+            <div class="bg-gray-800 p-4 rounded-lg shadow-lg">                
                 <!-- Screenshot Placeholder - Replace with actual carousel component -->
-                <div class="aspect-video bg-gray-700 flex items-center justify-center mb-4 rounded">
-                    {project.screenshots.length > 0 ? (
-                        <img 
-                            src={project.screenshots[0]} 
-                            alt={`${project.title} screenshot in light mode`} 
-                            class="max-w-full max-h-full rounded"
-                        />
-                    ) : (
-                        <div class="text-center p-8">
-                            <p class="text-lg mb-2">📸 Light Mode Screenshot</p>
-                            <p class="text-sm text-gray-400">Add your light mode screenshots to the 'screenshots' array</p>
-                            <p class="text-sm text-gray-400 mt-2">Recommended size: 1280x720px</p>
-                        </div>
-                    )}
-                </div>
-                <div class="flex overflow-x-auto gap-2 pb-2">
-                    {project.screenshots.length > 0 ? (
-                        project.screenshots.map((screenshot) => (
-                            <div class="w-24 h-16 flex-shrink-0 bg-gray-700 rounded">
-                                <img 
-                                    src={screenshot} 
-                                    alt={`${project.title} thumbnail`} 
-                                    class="w-full h-full object-cover rounded"
-                                />
-                            </div>
-                        ))
-                    ) : (
-                        Array(4).fill(0).map((_, i) => (
-                            <div class="w-24 h-16 flex-shrink-0 bg-gray-700 rounded flex items-center justify-center">
-                                <span class="text-xs text-gray-400">{i % 2 === 0 ? "Light" : "Dark"} {Math.ceil((i+1)/2)}</span>
-                            </div>
-                        ))
-                    )}
-                </div>
+                <ProjectCarouselWithTabs
+                client:load
+                categories={categories}
+              />        
                 
                 {/* New feature preview section */}
                 <div class="mt-6 p-4 bg-gray-700 rounded-lg">
