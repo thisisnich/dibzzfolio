@@ -1,6 +1,7 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
 import ProjectCarouselWithTabs from '../../../components/ProjectCarousel.tsx'; 
+import CodeChangeCard from "../../../components/codeChangeCard";
 
 const categories = [
   {
@@ -33,14 +34,8 @@ const project = {
     features: [
         "Add and categorize expenses",
         "Visualize spending with charts",
-        "Export data to CSV",
-        "Responsive design for mobile and desktop",
         "Dark mode for reduced eye strain",
         "Automatic budget allocation for income"
-    ],
-    screenshots: [
-        "/src/images/budget-tracker-1.png",
-        "/src/images/budget-tracker-2.png"
     ],
     mainProject: {
         title: "Original Budget Tracker",
@@ -52,206 +47,405 @@ const project = {
     myRepo: "https://github.com/thisisnich/betheler-budget-finance",
     codeChanges: [
         {
-            title: "Dark Mode Implementation",
-            description: "Added a fully responsive dark mode with proper theme detection and toggle functionality.",
+            title: "Dark Mode CSS Variables",
+            description: "Added a responsive dark mode with proper theme detection and toggle functionality.",
             code: `// Added CSS variables for theme colors instead of hard-coded values
 :root {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f1f5f9;
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
-  --accent-color: #3b82f6;
-  --border-color: #e2e8f0;
-}
-
-[data-theme="dark"] {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --accent-color: #60a5fa;
-  --border-color: #334155;
-}
-
-// Dark mode toggle functionality
-const darkModeToggle = document.getElementById('darkModeToggle');
-const htmlElement = document.documentElement;
-
-// Check for user preference
-if (localStorage.getItem('theme') === 'dark' || 
-    (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-  htmlElement.setAttribute('data-theme', 'dark');
-  darkModeToggle.checked = true;
-}
-
-darkModeToggle.addEventListener('change', () => {
-  if (darkModeToggle.checked) {
-    htmlElement.setAttribute('data-theme', 'dark');
-    localStorage.setItem('theme', 'dark');
-  } else {
-    htmlElement.setAttribute('data-theme', 'light');
-    localStorage.setItem('theme', 'light');
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --muted-text: oklch(63.36% 0.044 264.88);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
   }
-});`
-        },
-        {
-            title: "React Components for Budget Allocation",
-            description: "Built React components for the new automatic budget allocation feature.",
-            code: `import React, { useState, useEffect } from 'react';
-import { useMutation, useQuery } from '../convex/_generated/react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 
-export function BudgetAllocationPage() {
-  const [income, setIncome] = useState(0);
-  const [allocations, setAllocations] = useState([]);
-  
-  // Fetch user's allocation rules from Convex
-  const allocationRules = useQuery('budgetRules/getUserRules');
-  const saveAllocation = useMutation('budgetRules/saveRule');
-  
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
-  
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --muted-text: oklch(73.59% 0.041 264.37);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+}`},
+{
+            title: "Dark Mode Toggle Functionality",
+            description: "Added a dark mode toggle switch to the application.",
+            code: `'use client';
+
+import { useEffect, useState } from 'react';
+
+export function DarkModeToggle() {
+  // Initialize dark mode state as null to avoid SSR issues
+  const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
+
   useEffect(() => {
-    if (allocationRules && income > 0) {
-      // Calculate allocations based on rules
-      calculateAllocations();
+    // Determine the initial theme after the component mounts
+    const storedPreference = localStorage.getItem('theme');
+    if (storedPreference) {
+      setIsDarkMode(storedPreference === 'dark');
+    } else {
+      // Fallback to system preference
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setIsDarkMode(systemPrefersDark);
     }
-  }, [allocationRules, income]);
-  
-  const calculateAllocations = () => {
-    // Implementation of budget allocation logic
-    // ...
+  }, []);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode((prev) => {
+      const newMode = !prev;
+      if (newMode) {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      }
+      return newMode;
+    });
   };
-  
-  const handleSaveRule = (rule) => {
-    saveAllocation(rule)
-      .then(() => {
-        // Update UI after successful save
-      })
-      .catch(error => {
-        console.error("Error saving allocation rule:", error);
-      });
-  };
-  
+
+  useEffect(() => {
+    // Apply the theme only when isDarkMode is not null
+    if (isDarkMode !== null) {
+      if (isDarkMode) {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      }
+    }
+  }, [isDarkMode]);
+
+  if (isDarkMode === null) {
+    // Optionally, render nothing or a loading state until the theme is determined
+    return null;
+  }
+
   return (
-    <div className="budget-allocation-container">
-      <h1>Budget Allocation</h1>
-      
-      <div className="income-input">
-        <label htmlFor="income">Monthly Income:</label>
-        <input
-          type="number"
-          id="income"
-          value={income}
-          onChange={(e) => setIncome(Number(e.target.value))}
-        />
-      </div>
-      
-      {income > 0 && (
-        <>
-          <div className="allocation-chart">
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={allocations}
-                  dataKey="amount"
-                  nameKey="category"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={100}
-                  fill="#8884d8"
-                  label
-                >
-                  {allocations.map((entry, index) => (
-                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value) => \`\$\${value.toFixed(2)}\`} />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          
-          {/* Rule management UI */}
-        </>
-      )}
-    </div>
+    <button
+      type="button"
+      onClick={toggleDarkMode}
+      className="px-4 py-2 bg-secondary text-secondary-foreground rounded"
+    >
+      Toggle {isDarkMode ? 'Light' : 'Dark'} Mode
+    </button>
   );
 }`
-        },
-        {
-            title: "Convex Database Integration",
-            description: "Integrated Convex for real-time database functionality to store budget data and synchronize across devices.",
-            code: `// Convex database schema and functions
-// convex/schema.js
-import { defineSchema, defineTable, s } from "convex/schema";
+},
+{         title: "React Components for Budget Allocation",
+            description: "Built React components for the new automatic budget allocation feature.",
+            code: `import { CategorySelect } from '@/components/CategorySelect';
+import { evaluateExpression } from '@/lib/evaluateExpressions';
+import type { Allocation } from '@/types/schema';
+import { api } from '@workspace/backend/convex/_generated/api';
+import { useSessionMutation, useSessionQuery } from 'convex-helpers/react/sessions';
+import { useEffect, useState } from 'react';
 
-export default defineSchema({
-  transactions: defineTable({
-    userId: s.string(),
-    date: s.string(),
-    category: s.string(),
-    amount: s.number(),
-    description: s.string(),
-    createdAt: s.number(),
-  }).index("by_user", ["userId"]),
-  
-  budgetRules: defineTable({
-    userId: s.string(),
-    category: s.string(),
-    type: s.string(), // "fixed" or "percent"
-    amount: s.optional(s.number()),
-    percentage: s.optional(s.number()),
-    priority: s.number(),
-  }).index("by_user", ["userId"]),
-});
+interface AddAllocationFormProps {
+  onSuccess: () => void;
+  initialAllocation?: Allocation;
+  allocations?: Allocation[];
+}
 
-// convex/budgetRules.js
-import { query, mutation } from "./_generated/server";
-import { v } from "convex/values";
+export function AddAllocationForm({ onSuccess, initialAllocation, allocations: propAllocations }: AddAllocationFormProps) {
+  const [newAllocation, setNewAllocation] = useState<Allocation>({
+    _id: '',
+    category: '',
+    type: 'amount',
+    value: 0,
+    priority: 1,
+    alwaysAdd: false,
+  });
 
-export const getUserRules = query({
-  args: {},
-  handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Not authenticated");
+  const fetchedAllocations = useSessionQuery(api.allocation.getAllocations);
+  const allocations = propAllocations || fetchedAllocations || [];
+  const upsertAllocation = useSessionMutation(api.allocation.upsertAllocation);
+
+  useEffect(() => {
+    if (initialAllocation) setNewAllocation(initialAllocation);
+  }, [initialAllocation]);
+
+  const handleInputChange = (key: keyof Allocation, value: any) => {
+    setNewAllocation((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const value = evaluateExpression(newAllocation.value.toString());
+    if (!newAllocation.category || value === null || value <= 0) return alert('Invalid input.');
+
+    if (['percentage', 'overflow'].includes(newAllocation.type)) {
+      const total = allocations
+        .filter((a) => ['percentage', 'overflow'].includes(a.type))
+        .reduce((sum, a) => sum + a.value, 0);
+      if (total + value > 100) return alert('Total % exceeds 100');
     }
-    
-    const userId = identity.subject;
-    return await ctx.db
-      .query("budgetRules")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
-      .order("priority", "asc")
+
+    if (newAllocation.priority < 1 || newAllocation.priority > 99)
+      return alert('Priority must be 1–99.');
+
+    if (
+      newAllocation.type !== 'overflow' &&
+      allocations.some((a) => a.priority === newAllocation.priority && a._id !== newAllocation._id)
+    ) {
+      return alert('Priority conflict.');
+    }
+
+    try {
+      await upsertAllocation({
+        ...newAllocation,
+        value,
+      });
+      onSuccess();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mb-6 p-4 border rounded-md bg-card text-card-foreground">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          {!initialAllocation && <label htmlFor="category">Category</label>}
+          {initialAllocation ? (
+            <p className="font-medium mt-8">{newAllocation.category}</p>
+          ) : (
+            <CategorySelect
+              value={newAllocation.category}
+              onChange={(v) => handleInputChange('category', v)}
+              className="w-full border rounded px-3 py-2 bg-input text-foreground"
+            />
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="type">Type</label>
+          <select
+            id="type"
+            value={newAllocation.type}
+            onChange={(e) => handleInputChange('type', e.target.value)}
+            className="w-full border rounded px-3 py-2"
+          >
+            <option value="amount">Fixed Amount</option>
+            <option value="percentage">Percentage</option>
+            <option value="overflow">Overflow</option>
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="value">Value</label>
+          <input
+            type="text"
+            value={newAllocation.value}
+            onChange={(e) => handleInputChange('value', e.target.value)}
+            className="w-full border rounded px-3 py-2"
+            placeholder="e.g. 500 or 300+50"
+          />
+        </div>
+
+        {newAllocation.type !== 'overflow' && (
+          <div>
+            <label htmlFor="priority">Priority</label>
+            <input
+              type="number"
+              value={newAllocation.priority}
+              onChange={(e) => handleInputChange('priority', Math.max(1, Math.min(99, +e.target.value)))}
+              className="w-full border rounded px-3 py-2"
+              placeholder="1–99"
+            />
+          </div>
+        )}
+      </div>
+
+      <div className="flex items-center justify-between mt-4 gap-4">
+        <button type="submit" className="h-10 px-4 py-2 bg-primary text-primary-foreground rounded">
+          {newAllocation._id ? 'Update Allocation' : 'Add Allocation'}
+        </button>
+
+        {newAllocation.type === 'amount' && (
+          <button
+            type="button"
+            className={\`h-10 px-4 py-2 rounded \${
+              newAllocation.alwaysAdd ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'
+            }\`}
+            onClick={() => handleInputChange('alwaysAdd', !newAllocation.alwaysAdd)}
+          >
+            {newAllocation.alwaysAdd ? 'Always Add On' : 'Enable Always Add'}
+          </button>
+        )}
+      </div>
+    </form>
+  );
+}
+
+`},
+        {
+            title: "Allocation mutations and queries",
+            description: "Implemented Convex queries and mutations for managing budget allocations.",
+            code: `
+            // Import helpers and types
+import { SessionIdArg } from 'convex-helpers/server/sessions';
+import { mutation, query } from './_generated/server';
+import { v } from 'convex/values';
+import { getAuthUser } from '../modules/auth/getAuthUser';
+
+// Allocation type definition
+interface Allocation {
+  userId: string;
+  category: string;
+  type: 'amount' | 'percentage' | 'overflow';
+  value: number;
+  priority?: number;
+}
+
+// Get all allocations for current user
+export const getAllocations = query({
+  args: { ...SessionIdArg },
+  handler: async (ctx, args) => {
+    const user = await getAuthUser(ctx, args);
+    if (!user) throw new Error('Unauthorized');
+    return await ctx.db.query('allocations')
+      .filter(q => q.eq(q.field('userId'), user._id))
       .collect();
   },
 });
 
-export const saveRule = mutation({
+// Create or update a user’s allocation
+export const upsertAllocation = mutation({
   args: {
+    ...SessionIdArg,
     category: v.string(),
-    type: v.string(),
-    amount: v.optional(v.number()),
-    percentage: v.optional(v.number()),
-    priority: v.number(),
+    type: v.union(v.literal('amount'), v.literal('percentage'), v.literal('overflow')),
+    value: v.float64(),
+    priority: v.float64(),
+    alwaysAdd: v.optional(v.boolean()),
   },
-  handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Not authenticated");
+  handler: async (ctx, { sessionId, ...rest }) => {
+    const user = await getAuthUser(ctx, { sessionId });
+    if (!user) throw new Error('Unauthorized');
+
+    const existing = await ctx.db.query('allocations')
+      .filter(q =>
+        q.and(
+          q.eq(q.field('userId'), user._id),
+          q.eq(q.field('category'), rest.category)
+        )
+      ).first();
+
+    const allocationData = { userId: user._id, ...rest };
+    existing
+      ? await ctx.db.patch(existing._id, allocationData)
+      : await ctx.db.insert('allocations', allocationData);
+  },
+});
+
+// Delete allocation for a category
+export const deleteAllocation = mutation({
+  args: { ...SessionIdArg, category: v.string() },
+  handler: async (ctx, { sessionId, category }) => {
+    const user = await getAuthUser(ctx, { sessionId });
+    if (!user) throw new Error('Unauthorized');
+
+    const existing = await ctx.db.query('allocations')
+      .filter(q =>
+        q.and(
+          q.eq(q.field('userId'), user._id),
+          q.eq(q.field('category'), category)
+        )
+      ).first();
+
+    if (existing) await ctx.db.delete(existing._id);
+  },
+});
+
+// Split income based on user’s allocations
+export const splitIncomeByAllocations = mutation({
+  args: { ...SessionIdArg, income: v.number() },
+  handler: async (ctx, { sessionId, income }) => {
+    const user = await getAuthUser(ctx, { sessionId });
+    if (!user) throw new Error('Unauthorized');
+
+    const allocations = await ctx.db.query('allocations')
+      .filter(q => q.eq(q.field('userId'), user._id))
+      .collect();
+
+    const year = new Date().getFullYear();
+    const month = new Date().getMonth();
+    const budgets = await ctx.db.query('budgets')
+      .withIndex('by_userId_yearMonth', q =>
+        q.eq('userId', user._id).eq('year', year).eq('month', month)
+      ).collect();
+
+    const budgetMap = Object.fromEntries(budgets.map(b => [b.category, b.amount]));
+    const result: Record<string, number> = {};
+    let remaining = income;
+
+    const sorted = allocations.sort((a, b) => (b.priority || 0) - (a.priority || 0));
+    const overflows = sorted.filter(a => a.type === 'overflow');
+
+    for (const a of sorted) {
+      const { category, type, value, alwaysAdd } = a;
+      const current = budgetMap[category] || 0;
+
+      if (type === 'amount') {
+        const toAdd = alwaysAdd
+          ? Math.min(value, remaining)
+          : current < value
+          ? Math.min(value - current, remaining)
+          : 0;
+        result[category] = (result[category] || 0) + toAdd;
+        remaining -= toAdd;
+      }
+
+      if (type === 'percentage') {
+        const percentAmt = Math.min((value / 100) * income, remaining);
+        result[category] = percentAmt;
+        remaining -= percentAmt;
+      }
+
+      if (remaining <= 0) break;
     }
-    
-    const userId = identity.subject;
-    return await ctx.db.insert("budgetRules", {
-      userId,
-      category: args.category,
-      type: args.type,
-      amount: args.amount,
-      percentage: args.percentage,
-      priority: args.priority,
-    });
+
+    for (const o of overflows) {
+      if (remaining <= 0) break;
+      const overflowAmt = (o.value / 100) * remaining;
+      result[o.category] = (result[o.category] || 0) + overflowAmt;
+      remaining -= overflowAmt;
+    }
+
+    return result;
   },
-});`
+});
+
+            `
         }
     ]
 };
@@ -348,11 +542,8 @@ const contributions = await fetchGitHubStats();
                     <h3 class="text-lg font-medium mb-2">🔍 Feature Highlight: Automatic Budget Allocation</h3>
                     <p class="text-sm text-gray-300 mb-3">Automatically distribute your income across different budget categories based on your financial goals.</p>
                     <div class="aspect-video bg-gray-800 flex items-center justify-center rounded">
-                        <div class="text-center p-6">
-                            <p class="text-lg mb-2">💰 Budget Allocation Screenshot</p>
-                            <p class="text-sm text-gray-400">Add a screenshot of the new budget allocation feature</p>
-                        </div>
-                    </div>
+                  <img src="/public/images/misc/allocationDemo.png" alt="💰 Budget Allocation Screenshot">
+                </div>
                 </div>
             </div>
         </section>
@@ -418,22 +609,21 @@ const contributions = await fetchGitHubStats();
         </section>
         
         <!-- My Improvements Section -->
-        <section class="mb-12">
-            <h2 class="text-2xl font-bold mb-6">My Improvements & Code Changes</h2>
-            <div class="space-y-8">
-                {project.codeChanges.map((change) => (
-                    <div class="bg-gray-800 rounded-lg overflow-hidden">
-                        <div class="bg-gray-700 p-4">
-                            <h3 class="text-xl font-medium">{change.title}</h3>
-                            <p class="text-gray-300">{change.description}</p>
-                        </div>
-                        <div class="p-4 overflow-x-auto">
-                            <pre class="bg-gray-900 p-4 rounded text-sm font-mono"><code>{change.code}</code></pre>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </section>
+       <!-- My Improvements Section with Collapsible Code -->
+       <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-6">My Improvements & Code Changes</h2>
+        <div class="space-y-8">
+            {project.codeChanges.map((change) => (
+                <CodeChangeCard 
+                    title={change.title}
+                    description={change.description}
+                    code={change.code}
+                    maxLines={25}
+                    client:visible
+                />
+            ))}
+        </div>
+    </section>
 
         <!-- Implementation Details Section -->
         <section class="mb-12">
@@ -445,10 +635,10 @@ const contributions = await fetchGitHubStats();
                 
                 <h3>Dark Mode Implementation</h3>
                 <p>
-                    The original project used hard-coded CSS colors throughout the application, making it difficult to implement a dark mode. I refactored the entire CSS structure to use CSS variables instead, creating a consistent theming system that supports both light and dark modes.
+                    The original project used hard-coded CSS colors throughout the application, making it difficult to implement a dark mode. I refactored the CSS structure to use CSS variables instead, creating a consistent theming system that supports both light and dark modes.
                 </p>
                 <p>
-                    The dark mode automatically detects the user's system preference but can also be toggled manually. The theme selection is persisted in localStorage to maintain the user's preference across visits.
+                    The dark mode can be toggled manually. The theme selection is persisted in localStorage to maintain the user's preference across visits.
                 </p>
                 
                 <h3>Automatic Budget Allocation Feature</h3>
@@ -472,3 +662,21 @@ const contributions = await fetchGitHubStats();
         </section>
     </main>
 </Layout>
+
+<style>
+  /* Add this style to handle collapsed code sections */
+.max-h-code-collapsed {
+  position: relative;
+}
+
+.max-h-code-collapsed::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background: linear-gradient(to bottom, transparent, rgba(17, 24, 39, 0.9));
+  pointer-events: none;
+}
+</style>
