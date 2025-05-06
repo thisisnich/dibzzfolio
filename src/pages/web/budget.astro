@@ -1,0 +1,489 @@
+---
+import Layout from "../../layouts/Layout.astro";
+const project = {
+    title: "Budget Tracker",
+    description: "A web application that helps users manage their finances by tracking income and expenses.",
+    technologies: ["React", "Node.js", "JavaScript", "CSS", "Convex"],
+    features: [
+        "Add and categorize expenses",
+        "Visualize spending with charts",
+        "Export data to CSV",
+        "Responsive design for mobile and desktop",
+        "Dark mode for reduced eye strain",
+        "Automatic budget allocation for income"
+    ],
+    screenshots: [
+        "/src/images/budget-tracker-1.png",
+        "/src/images/budget-tracker-2.png"
+    ],
+    mainProject: {
+        title: "Original Budget Tracker",
+        description: "The original project by my friend that inspired this fork.",
+        website: "https://betheler-budget-finance-webapp.vercel.app/",
+        repo: "https://github.com/conradkoh/betheler-budget-finance"
+    },
+    myWebsite: "https://betheler-budget-finance-webapp-xi.vercel.app/",
+    myRepo: "https://github.com/thisisnich/betheler-budget-finance",
+    codeChanges: [
+        {
+            title: "Dark Mode Implementation",
+            description: "Added a fully responsive dark mode with proper theme detection and toggle functionality.",
+            code: `// Added CSS variables for theme colors instead of hard-coded values
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f1f5f9;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --accent-color: #3b82f6;
+  --border-color: #e2e8f0;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --accent-color: #60a5fa;
+  --border-color: #334155;
+}
+
+// Dark mode toggle functionality
+const darkModeToggle = document.getElementById('darkModeToggle');
+const htmlElement = document.documentElement;
+
+// Check for user preference
+if (localStorage.getItem('theme') === 'dark' || 
+    (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+  htmlElement.setAttribute('data-theme', 'dark');
+  darkModeToggle.checked = true;
+}
+
+darkModeToggle.addEventListener('change', () => {
+  if (darkModeToggle.checked) {
+    htmlElement.setAttribute('data-theme', 'dark');
+    localStorage.setItem('theme', 'dark');
+  } else {
+    htmlElement.setAttribute('data-theme', 'light');
+    localStorage.setItem('theme', 'light');
+  }
+});`
+        },
+        {
+            title: "React Components for Budget Allocation",
+            description: "Built React components for the new automatic budget allocation feature.",
+            code: `import React, { useState, useEffect } from 'react';
+import { useMutation, useQuery } from '../convex/_generated/react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+
+export function BudgetAllocationPage() {
+  const [income, setIncome] = useState(0);
+  const [allocations, setAllocations] = useState([]);
+  
+  // Fetch user's allocation rules from Convex
+  const allocationRules = useQuery('budgetRules/getUserRules');
+  const saveAllocation = useMutation('budgetRules/saveRule');
+  
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+  
+  useEffect(() => {
+    if (allocationRules && income > 0) {
+      // Calculate allocations based on rules
+      calculateAllocations();
+    }
+  }, [allocationRules, income]);
+  
+  const calculateAllocations = () => {
+    // Implementation of budget allocation logic
+    // ...
+  };
+  
+  const handleSaveRule = (rule) => {
+    saveAllocation(rule)
+      .then(() => {
+        // Update UI after successful save
+      })
+      .catch(error => {
+        console.error("Error saving allocation rule:", error);
+      });
+  };
+  
+  return (
+    <div className="budget-allocation-container">
+      <h1>Budget Allocation</h1>
+      
+      <div className="income-input">
+        <label htmlFor="income">Monthly Income:</label>
+        <input
+          type="number"
+          id="income"
+          value={income}
+          onChange={(e) => setIncome(Number(e.target.value))}
+        />
+      </div>
+      
+      {income > 0 && (
+        <>
+          <div className="allocation-chart">
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={allocations}
+                  dataKey="amount"
+                  nameKey="category"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  fill="#8884d8"
+                  label
+                >
+                  {allocations.map((entry, index) => (
+                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value) => \`\$\${value.toFixed(2)}\`} />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          
+          {/* Rule management UI */}
+        </>
+      )}
+    </div>
+  );
+}`
+        },
+        {
+            title: "Convex Database Integration",
+            description: "Integrated Convex for real-time database functionality to store budget data and synchronize across devices.",
+            code: `// Convex database schema and functions
+// convex/schema.js
+import { defineSchema, defineTable, s } from "convex/schema";
+
+export default defineSchema({
+  transactions: defineTable({
+    userId: s.string(),
+    date: s.string(),
+    category: s.string(),
+    amount: s.number(),
+    description: s.string(),
+    createdAt: s.number(),
+  }).index("by_user", ["userId"]),
+  
+  budgetRules: defineTable({
+    userId: s.string(),
+    category: s.string(),
+    type: s.string(), // "fixed" or "percent"
+    amount: s.optional(s.number()),
+    percentage: s.optional(s.number()),
+    priority: s.number(),
+  }).index("by_user", ["userId"]),
+});
+
+// convex/budgetRules.js
+import { query, mutation } from "./_generated/server";
+import { v } from "convex/values";
+
+export const getUserRules = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+    
+    const userId = identity.subject;
+    return await ctx.db
+      .query("budgetRules")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .order("priority", "asc")
+      .collect();
+  },
+});
+
+export const saveRule = mutation({
+  args: {
+    category: v.string(),
+    type: v.string(),
+    amount: v.optional(v.number()),
+    percentage: v.optional(v.number()),
+    priority: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+    
+    const userId = identity.subject;
+    return await ctx.db.insert("budgetRules", {
+      userId,
+      category: args.category,
+      type: args.type,
+      amount: args.amount,
+      percentage: args.percentage,
+      priority: args.priority,
+    });
+  },
+});`
+        }
+    ]
+};
+
+// Function to dynamically fetch GitHub stats
+const fetchGitHubStats = async (): Promise<{
+  commits: number;
+  additions: number;
+  deletions: number;
+  files: number;
+}> => {
+  const username = "thisisnich"; // Replace with your GitHub username
+  const repoOwner = "thisisnich";
+  const repoName = "betheler-budget-finance";
+
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${repoOwner}/${repoName}/stats/contributors`
+    );
+
+    // GitHub may return 202 while it generates the stats
+    if (!res.ok) {
+      throw new Error(`GitHub API error: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+
+    if (!Array.isArray(data)) {
+      throw new Error("GitHub is still generating stats. Try again later.");
+    }
+
+    const userStats = data.find(
+      (contributor) => contributor.author.login === username
+    );
+
+    if (!userStats) throw new Error("User not found in contributors");
+
+    const additions = userStats.weeks.reduce((sum: number, w: any) => sum + w.a, 0);
+    const deletions = userStats.weeks.reduce((sum: number, w: any) => sum + w.d, 0);
+    const commits = userStats.total;
+    const files = 0; // Still requires per-commit analysis
+
+    return { commits, additions, deletions, files };
+
+  } catch (error) {
+    console.error("Error fetching GitHub stats:", error);
+    return {
+      commits: 0,
+      additions: 0,
+      deletions: 0,
+      files: 0
+    };
+  }
+};
+
+// In a real implementation, you would use Astro's server-side rendering capabilities:
+// export async function getStaticProps() {
+//   const contributions = await fetchGitHubStats();
+//   return { props: { contributions } };
+// }
+
+// For demonstration purposes, we're using placeholder data
+const contributions = await fetchGitHubStats();
+---
+
+<Layout title={project.title}>
+    <main class="max-w-4xl mx-auto text-white px-4 sm:px-6 lg:px-8 py-10">
+        <!-- Hero Section -->
+        <section class="mb-12 text-center">
+            <div class="relative inline-block mb-6">
+                <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg blur opacity-75"></div>
+                <h1 class="relative text-4xl font-bold bg-gray-900 rounded-lg px-6 py-2">{project.title}</h1>
+            </div>
+            <p class="text-xl mb-6">{project.description}</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href={project.myWebsite} target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition">View Live Demo</a>
+                <a href={project.myRepo} target="_blank" class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-2 rounded-lg transition">GitHub Repository</a>
+            </div>
+            <div class="mt-6 inline-block bg-gray-800 px-4 py-2 rounded-lg">
+                <span class="text-sm mr-2">🌓</span>
+                <span class="text-gray-300">Now with dark mode!</span>
+            </div>
+        </section>
+
+        <!-- Screenshots Carousel Section -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-4">Project Showcase</h2>
+            <div class="bg-gray-800 p-4 rounded-lg shadow-lg">
+                <!-- Tab System for Light/Dark Mode Screenshots -->
+                <div class="mb-4">
+                    <div class="flex border-b border-gray-700 mb-4">
+                        <button class="py-2 px-4 border-b-2 border-blue-500 text-blue-500">Light Mode</button>
+                        <button class="py-2 px-4 text-gray-400 hover:text-gray-200">Dark Mode</button>
+                    </div>
+                </div>
+                
+                <!-- Screenshot Placeholder - Replace with actual carousel component -->
+                <div class="aspect-video bg-gray-700 flex items-center justify-center mb-4 rounded">
+                    {project.screenshots.length > 0 ? (
+                        <img 
+                            src={project.screenshots[0]} 
+                            alt={`${project.title} screenshot in light mode`} 
+                            class="max-w-full max-h-full rounded"
+                        />
+                    ) : (
+                        <div class="text-center p-8">
+                            <p class="text-lg mb-2">📸 Light Mode Screenshot</p>
+                            <p class="text-sm text-gray-400">Add your light mode screenshots to the 'screenshots' array</p>
+                            <p class="text-sm text-gray-400 mt-2">Recommended size: 1280x720px</p>
+                        </div>
+                    )}
+                </div>
+                <div class="flex overflow-x-auto gap-2 pb-2">
+                    {project.screenshots.length > 0 ? (
+                        project.screenshots.map((screenshot) => (
+                            <div class="w-24 h-16 flex-shrink-0 bg-gray-700 rounded">
+                                <img 
+                                    src={screenshot} 
+                                    alt={`${project.title} thumbnail`} 
+                                    class="w-full h-full object-cover rounded"
+                                />
+                            </div>
+                        ))
+                    ) : (
+                        Array(4).fill(0).map((_, i) => (
+                            <div class="w-24 h-16 flex-shrink-0 bg-gray-700 rounded flex items-center justify-center">
+                                <span class="text-xs text-gray-400">{i % 2 === 0 ? "Light" : "Dark"} {Math.ceil((i+1)/2)}</span>
+                            </div>
+                        ))
+                    )}
+                </div>
+                
+                {/* New feature preview section */}
+                <div class="mt-6 p-4 bg-gray-700 rounded-lg">
+                    <h3 class="text-lg font-medium mb-2">🔍 Feature Highlight: Automatic Budget Allocation</h3>
+                    <p class="text-sm text-gray-300 mb-3">Automatically distribute your income across different budget categories based on your financial goals.</p>
+                    <div class="aspect-video bg-gray-800 flex items-center justify-center rounded">
+                        <div class="text-center p-6">
+                            <p class="text-lg mb-2">💰 Budget Allocation Screenshot</p>
+                            <p class="text-sm text-gray-400">Add a screenshot of the new budget allocation feature</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Project Info Grid -->
+        <section class="grid md:grid-cols-2 gap-8 mb-12">
+            <!-- Technologies Column -->
+            <div>
+                <h2 class="text-2xl font-bold mb-4">Technologies Used</h2>
+                <div class="flex flex-wrap gap-2 mb-6">
+                    {project.technologies.map(tech => (
+                        <span class="bg-gray-700 px-3 py-1 rounded-full text-sm">{tech}</span>
+                    ))}
+                </div>
+                
+                <h2 class="text-2xl font-bold mb-4">Contribution Stats</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <p class="text-gray-400 text-sm">Commits</p>
+                        <p class="text-2xl font-bold">{contributions.commits}</p>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <p class="text-gray-400 text-sm">Files Changed</p>
+                        <p class="text-2xl font-bold">{contributions.files}</p>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <p class="text-gray-400 text-sm">Additions</p>
+                        <p class="text-2xl font-bold text-green-500">+{contributions.additions}</p>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <p class="text-gray-400 text-sm">Deletions</p>
+                        <p class="text-2xl font-bold text-red-500">-{contributions.deletions}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Features Column -->
+            <div>
+                <h2 class="text-2xl font-bold mb-4">Key Features</h2>
+                <ul class="space-y-3">
+                    {project.features.map(feature => (
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2">✓</span>
+                            <span>{feature}</span>
+                        </li>
+                    ))}
+                </ul>
+                
+                <h2 class="text-2xl font-bold mt-8 mb-4">About the Project</h2>
+                <div class="bg-gray-800 p-4 rounded-lg">
+                    <p class="mb-4">This project is a fork of <strong>{project.mainProject.title}</strong>. {project.mainProject.description}</p>
+                    <p class="mb-4">My fork adds dark mode support and a new automatic budget allocation feature to make financial planning easier.</p>
+                    <div class="flex flex-col space-y-2">
+                        <a href={project.mainProject.website} target="_blank" class="text-blue-400 hover:underline">
+                            View original project
+                        </a>
+                        <a href={project.mainProject.repo} target="_blank" class="text-blue-400 hover:underline">
+                            Original repository
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- My Improvements Section -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6">My Improvements & Code Changes</h2>
+            <div class="space-y-8">
+                {project.codeChanges.map((change) => (
+                    <div class="bg-gray-800 rounded-lg overflow-hidden">
+                        <div class="bg-gray-700 p-4">
+                            <h3 class="text-xl font-medium">{change.title}</h3>
+                            <p class="text-gray-300">{change.description}</p>
+                        </div>
+                        <div class="p-4 overflow-x-auto">
+                            <pre class="bg-gray-900 p-4 rounded text-sm font-mono"><code>{change.code}</code></pre>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </section>
+
+        <!-- Implementation Details Section -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-4">Implementation Details</h2>
+            <div class="prose prose-invert max-w-none">
+                <p>
+                    In this fork, I've focused on enhancing the user experience and adding functionality that makes the budget tracker more powerful and useful for daily financial management. Below are some of the key implementation details:
+                </p>
+                
+                <h3>Dark Mode Implementation</h3>
+                <p>
+                    The original project used hard-coded CSS colors throughout the application, making it difficult to implement a dark mode. I refactored the entire CSS structure to use CSS variables instead, creating a consistent theming system that supports both light and dark modes.
+                </p>
+                <p>
+                    The dark mode automatically detects the user's system preference but can also be toggled manually. The theme selection is persisted in localStorage to maintain the user's preference across visits.
+                </p>
+                
+                <h3>Automatic Budget Allocation Feature</h3>
+                <p>
+                    I added a completely new page that allows users to set up rules for automatically allocating their income to different budget categories. This includes support for both fixed amounts and percentage-based allocations.
+                </p>
+                <p>
+                    Users can create, edit, and save their allocation rules, making it easier to consistently budget their income according to their financial goals. The system also provides a visual breakdown of the allocations to help users understand how their income is distributed.
+                </p>
+                
+                <h3>CSS Architecture Improvements</h3>
+                <p>
+                    Beyond just adding dark mode, I completely restructured the CSS architecture to improve maintainability. I replaced direct color values with semantic variables (like --text-primary instead of #333333) throughout the application, making future theming changes much simpler.
+                </p>
+                
+                <h3>Convex Database Integration</h3>
+                <p>
+                    I integrated Convex as the database solution, which provided real-time synchronization capabilities. This allowed for instant updates across devices when users make changes to their budget items or allocations.
+                </p>
+            </div>
+        </section>
+    </main>
+</Layout>
