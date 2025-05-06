@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import ProjectCarouselWithTabs from '../../components/ProjectCarousel'; 
+import ProjectCarouselWithTabs from '../../components/ProjectCarousel.tsx'; 
+
 const categories = [
   {
     label: 'Light Mode',
@@ -16,13 +17,12 @@ const categories = [
   {
     label: 'Dark Mode',
     screenshots: [
-    '/images/dark/dashboard-dark.png',
-    '/images/dark/transactions-dark.png',
-    '/images/dark/budgets-dark.png',
-    '/images/dark/leaderboard-dark.png',
-    '/images/dark/allocations-dark.png',
-    '/images/dark/profile-dark.png',
-
+      '/images/dark/dashboard-dark.png',
+      '/images/dark/transactions-dark.png',
+      '/images/dark/budgets-dark.png',
+      '/images/dark/leaderboard-dark.png',
+      '/images/dark/allocations-dark.png',
+      '/images/dark/profile-dark.png',
     ]
   },
 ];
@@ -343,8 +343,7 @@ const contributions = await fetchGitHubStats();
             <h2 class="text-2xl font-bold mb-4">Project Showcase</h2>
             <div class="bg-gray-800 p-4 rounded-lg shadow-lg">                
                 <!-- Screenshot Placeholder - Replace with actual carousel component -->
-                <ProjectCarouselWithTabs categories={categories} />
-    
+                <ProjectCarouselWithTabs categories={categories} />    
                 
                 {/* New feature preview section */}
                 <div class="mt-6 p-4 bg-gray-700 rounded-lg">
