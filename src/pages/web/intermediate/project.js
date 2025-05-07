@@ -1,26 +1,75 @@
 const project = {
-title: "Budget Tracker",
-description: "A web application that helps users manage their finances by tracking income and expenses.",
-technologies: ["React", "Node.js", "JavaScript", "CSS", "Convex"],
-features: [
+  // Basic Project Info
+  title: "Budget Tracker",
+  description: "A web application that helps users manage their finances by tracking income and expenses.",
+  
+  // Project Links
+  website: "https://betheler-budget-finance-webapp-xi.vercel.app/",
+  repo: "https://github.com/thisisnich/betheler-budget-finance",
+  
+  // Carousel Configuration (optional)
+  hasCarousel: true,
+  carouselCategories: [
+    {
+      label: 'Light Mode',
+      screenshots: [
+        '/images/light/dashboard-light.png',
+        '/images/light/transactions-light.png',
+        '/images/light/budgets-light.png',
+        '/images/light/leaderboard-light.png',
+        '/images/light/allocations-light.png',
+        '/images/light/profile-light.png',
+      ]
+    },
+    {
+      label: 'Dark Mode',
+      screenshots: [
+        '/images/dark/dashboard-dark.png',
+        '/images/dark/transactions-dark.png',
+        '/images/dark/budgets-dark.png',
+        '/images/dark/leaderboard-dark.png',
+        '/images/dark/allocations-dark.png',
+        '/images/dark/profile-dark.png',
+      ]
+    },
+  ],
+  
+  // Feature Highlight (always present)
+  featureHighlight: {
+    title: "Automatic Budget Allocation",
+    description: "Automatically distribute your income across different budget categories based on your financial goals.",
+    image: "/public/images/misc/allocationDemo.png"
+  },
+  
+  // Technologies Used (always present)
+  technologies: ["React", "Node.js", "JavaScript", "CSS", "Convex"],
+  
+  // Key Features (always present)
+  features: [
     "Add and categorize expenses",
     "Visualize spending with charts",
     "Dark mode for reduced eye strain",
     "Automatic budget allocation for income"
-],
-mainProject: {
-    title: "Original Budget Tracker",
-    description: "The original project by my friend that inspired this fork.",
-    website: "https://betheler-budget-finance-webapp.vercel.app/",
-    repo: "https://github.com/conradkoh/betheler-budget-finance"
-},
-myWebsite: "https://betheler-budget-finance-webapp-xi.vercel.app/",
-myRepo: "https://github.com/thisisnich/betheler-budget-finance",
-codeChanges: [
+  ],
+  
+  // About This Project (always present but content differs)
+  aboutProject: {
+    isForked: true,
+    mainProject: {
+      title: "Original Budget Tracker",
+      description: "The original project by my friend that inspired this fork.",
+      website: "https://betheler-budget-finance-webapp.vercel.app/",
+      repo: "https://github.com/conradkoh/betheler-budget-finance"
+    },
+    additionalInfo: "My fork adds dark mode support and a new automatic budget allocation feature to make financial planning easier."
+  },
+  
+  // My Improvements & Code Changes (always present)
+  codeChanges: [
     {
-        title: "Dark Mode CSS Variables",
-        description: "Added a responsive dark mode with proper theme detection and toggle functionality.",
-        code: `// Added CSS variables for theme colors instead of hard-coded values
+      title: "Dark Mode CSS Variables",
+      description: "Added a responsive dark mode with proper theme detection and toggle functionality.",
+      code: `// Added CSS variables for theme colors instead of hard-coded values
 :root {
 --background: oklch(1 0 0);
 --foreground: oklch(0.145 0 0);
@@ -65,10 +114,10 @@ codeChanges: [
 --input: oklch(1 0 0 / 15%);
 --ring: oklch(0.556 0 0);
 }`},
-{
-        title: "Dark Mode Toggle Functionality",
-        description: "Added a dark mode toggle switch to the application.",
-        code: `'use client';
+    {
+      title: "Dark Mode Toggle Functionality",
+      description: "Added a dark mode toggle switch to the application.",
+      code: `'use client';
 
 import { useEffect, useState } from 'react';
 
@@ -130,10 +179,11 @@ return (
 </button>
 );
 }`
-},
-{         title: "React Components for Budget Allocation",
-        description: "Built React components for the new automatic budget allocation feature.",
-        code: `import { CategorySelect } from '@/components/CategorySelect';
+    },
+    {         
+      title: "React Components for Budget Allocation",
+      description: "Built React components for the new automatic budget allocation feature.",
+      code: `import { CategorySelect } from '@/components/CategorySelect';
 import { evaluateExpression } from '@/lib/evaluateExpressions';
 import type { Allocation } from '@/types/schema';
 import { api } from '@workspace/backend/convex/_generated/api';
@@ -275,14 +325,12 @@ return (
   </div>
 </form>
 );
-}
-
-`},
+}`},
     {
-        title: "Allocation mutations and queries",
-        description: "Implemented Convex queries and mutations for managing budget allocations.",
-        code: `
-        // Import helpers and types
+      title: "Allocation mutations and queries",
+      description: "Implemented Convex queries and mutations for managing budget allocations.",
+      code: `
+// Import helpers and types
 import { SessionIdArg } from 'convex-helpers/server/sessions';
 import { mutation, query } from './_generated/server';
 import { v } from 'convex/values';
@@ -309,7 +357,7 @@ return await ctx.db.query('allocations')
 },
 });
 
-// Create or update a user’s allocation
+// Create or update a user's allocation
 export const upsertAllocation = mutation({
 args: {
 ...SessionIdArg,
@@ -357,7 +405,7 @@ if (existing) await ctx.db.delete(existing._id);
 },
 });
 
-// Split income based on user’s allocations
+// Split income based on user's allocations
 export const splitIncomeByAllocations = mutation({
 args: { ...SessionIdArg, income: v.number() },
 handler: async (ctx, { sessionId, income }) => {
@@ -415,10 +463,38 @@ for (const o of overflows) {
 return result;
 },
 });
-
-        `
+`
     }
-]
+  ],
+  
+  // Implementation Details (always present)
+  implementationDetails: [
+    {
+      title: "Dark Mode Implementation",
+      description: `The original project used hard-coded CSS colors throughout the application, making it difficult to implement a dark mode. I refactored the CSS structure to use CSS variables instead, creating a consistent theming system that supports both light and dark modes.
+
+The dark mode can be toggled manually. The theme selection is persisted in localStorage to maintain the user's preference across visits.`
+    },
+    {
+      title: "Automatic Budget Allocation Feature",
+      description: `I added a completely new page that allows users to set up rules for automatically allocating their income to different budget categories. This includes support for both fixed amounts and percentage-based allocations.
+
+Users can create, edit, and save their allocation rules, making it easier to consistently budget their income according to their financial goals. The system also provides a visual breakdown of the allocations to help users understand how their income is distributed.`
+    },
+    {
+      title: "CSS Architecture Improvements",
+      description: `Beyond just adding dark mode, I completely restructured the CSS architecture to improve maintainability. I replaced direct color values with semantic variables (like --text-primary instead of #333333) throughout the application, making future theming changes much simpler.`
+    },
+    {
+      title: "Convex Database Integration",
+      description: `I integrated Convex as the database solution, which provided real-time synchronization capabilities. This allowed for instant updates across devices when users make changes to their budget items or allocations.`
+    }
+  ],
+  
+  // GitHub Stats (Optional - can be fetched dynamically)
+  githubUsername: "thisisnich",
+  repoOwner: "thisisnich",
+  repoName: "betheler-budget-finance"
 };
 
 export default project;

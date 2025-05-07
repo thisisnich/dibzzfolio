@@ -2,33 +2,7 @@
 import Layout from "../../../layouts/Layout.astro";
 import ProjectCarouselWithTabs from '../../../components/ProjectCarousel.tsx'; 
 import CodeChangeCard from "../../../components/codeChangeCard";
-
-const categories = [
-  {
-    label: 'Light Mode',
-    screenshots: [
-      '/images/light/dashboard-light.png',
-      '/images/light/transactions-light.png',
-      '/images/light/budgets-light.png',
-      '/images/light/leaderboard-light.png',
-      '/images/light/allocations-light.png',
-      '/images/light/profile-light.png',
-    ]
-  },
-  {
-    label: 'Dark Mode',
-    screenshots: [
-      '/images/dark/dashboard-dark.png',
-      '/images/dark/transactions-dark.png',
-      '/images/dark/budgets-dark.png',
-      '/images/dark/leaderboard-dark.png',
-      '/images/dark/allocations-dark.png',
-      '/images/dark/profile-dark.png',
-    ]
-  },
-];
 import project from "./project.js";
-
 
 // Function to dynamically fetch GitHub stats
 const fetchGitHubStats = async (): Promise<{
@@ -37,9 +11,10 @@ const fetchGitHubStats = async (): Promise<{
   deletions: number;
   files: number;
 }> => {
-  const username = "thisisnich"; // Replace with your GitHub username
-  const repoOwner = "thisisnich";
-  const repoName = "betheler-budget-finance";
+  // Use the project data if available, otherwise fall back to hardcoded values
+  const username = project.githubUsername || "thisisnich";
+  const repoOwner = project.repoOwner || "thisisnich";
+  const repoName = project.repoName || "betheler-budget-finance";
 
   try {
     const res = await fetch(
@@ -81,13 +56,7 @@ const fetchGitHubStats = async (): Promise<{
   }
 };
 
-// In a real implementation, you would use Astro's server-side rendering capabilities:
-// export async function getStaticProps() {
-//   const contributions = await fetchGitHubStats();
-//   return { props: { contributions } };
-// }
-
-// For demonstration purposes, we're using placeholder data
+// Fetch GitHub stats
 const contributions = await fetchGitHubStats();
 ---
 
@@ -101,8 +70,8 @@ const contributions = await fetchGitHubStats();
             </div>
             <p class="text-xl mb-6">{project.description}</p>
             <div class="flex flex-wrap justify-center gap-4">
-                <a href={project.myWebsite} target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition">View Live Demo</a>
-                <a href={project.myRepo} target="_blank" class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-2 rounded-lg transition">GitHub Repository</a>
+                <a href={project.website} target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition">View Live Demo</a>
+                <a href={project.repo} target="_blank" class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-2 rounded-lg transition">GitHub Repository</a>
             </div>
             <div class="mt-6 inline-block bg-gray-800 px-4 py-2 rounded-lg">
                 <span class="text-sm mr-2">🌓</span>
@@ -114,16 +83,17 @@ const contributions = await fetchGitHubStats();
         <section class="mb-12">
             <h2 class="text-2xl font-bold mb-4">Project Showcase</h2>
             <div class="bg-gray-800 p-4 rounded-lg shadow-lg">                
-                <!-- Screenshot Placeholder - Replace with actual carousel component -->
-                <ProjectCarouselWithTabs categories={categories} client:load/>    
+                {project.hasCarousel && (
+                    <ProjectCarouselWithTabs categories={project.carouselCategories} client:load/>
+                )}
                 
-                {/* New feature preview section */}
+                {/* Feature highlight section */}
                 <div class="mt-6 p-4 bg-gray-700 rounded-lg">
-                    <h3 class="text-lg font-medium mb-2">🔍 Feature Highlight: Automatic Budget Allocation</h3>
-                    <p class="text-sm text-gray-300 mb-3">Automatically distribute your income across different budget categories based on your financial goals.</p>
+                    <h3 class="text-lg font-medium mb-2">🔍 Feature Highlight: {project.featureHighlight.title}</h3>
+                    <p class="text-sm text-gray-300 mb-3">{project.featureHighlight.description}</p>
                     <div class="aspect-video bg-gray-800 flex items-center justify-center rounded">
-                  <img src="/public/images/misc/allocationDemo.png" alt="💰 Budget Allocation Screenshot">
-                </div>
+                        <img src={project.featureHighlight.image} alt={`${project.featureHighlight.title} Screenshot`}>
+                    </div>
                 </div>
             </div>
         </section>
@@ -174,70 +144,56 @@ const contributions = await fetchGitHubStats();
                 
                 <h2 class="text-2xl font-bold mt-8 mb-4">About the Project</h2>
                 <div class="bg-gray-800 p-4 rounded-lg">
-                    <p class="mb-4">This project is a fork of <strong>{project.mainProject.title}</strong>. {project.mainProject.description}</p>
-                    <p class="mb-4">My fork adds dark mode support and a new automatic budget allocation feature to make financial planning easier.</p>
-                    <div class="flex flex-col space-y-2">
-                        <a href={project.mainProject.website} target="_blank" class="text-blue-400 hover:underline">
-                            View original project
-                        </a>
-                        <a href={project.mainProject.repo} target="_blank" class="text-blue-400 hover:underline">
-                            Original repository
-                        </a>
-                    </div>
+                    {project.aboutProject.isForked ? (
+                        <>
+                            <p class="mb-4">This project is a fork of <strong>{project.aboutProject.mainProject.title}</strong>. {project.aboutProject.mainProject.description}</p>
+                            <p class="mb-4">{project.aboutProject.additionalInfo}</p>
+                            <div class="flex flex-col space-y-2">
+                                <a href={project.aboutProject.mainProject.website} target="_blank" class="text-blue-400 hover:underline">
+                                    View original project
+                                </a>
+                                <a href={project.aboutProject.mainProject.repo} target="_blank" class="text-blue-400 hover:underline">
+                                    Original repository
+                                </a>
+                            </div>
+                        </>
+                    ) : (
+                        <p>{project.aboutProject.additionalInfo}</p>
+                    )}
                 </div>
             </div>
         </section>
         
-        <!-- My Improvements Section -->
-       <!-- My Improvements Section with Collapsible Code -->
-       <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-6">My Improvements & Code Changes</h2>
-        <div class="space-y-8">
-            {project.codeChanges.map((change) => (
-                <CodeChangeCard 
-                    title={change.title}
-                    description={change.description}
-                    code={change.code}
-                    maxLines={25}
-                    client:visible
-                />
-            ))}
-        </div>
-    </section>
+        <!-- My Improvements Section with Collapsible Code -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6">My Improvements & Code Changes</h2>
+            <div class="space-y-8">
+                {project.codeChanges.map((change) => (
+                    <CodeChangeCard 
+                        title={change.title}
+                        description={change.description}
+                        code={change.code}
+                        maxLines={25}
+                        client:visible
+                    />
+                ))}
+            </div>
+        </section>
 
         <!-- Implementation Details Section -->
         <section class="mb-12">
             <h2 class="text-2xl font-bold mb-4">Implementation Details</h2>
             <div class="prose prose-invert max-w-none">
                 <p>
-                    In this fork, I've focused on enhancing the user experience and adding functionality that makes the budget tracker more powerful and useful for daily financial management. Below are some of the key implementation details:
+                    In this project, I've focused on enhancing the user experience and adding functionality that makes the budget tracker more powerful and useful for daily financial management. Below are some of the key implementation details:
                 </p>
                 
-                <h3>Dark Mode Implementation</h3>
-                <p>
-                    The original project used hard-coded CSS colors throughout the application, making it difficult to implement a dark mode. I refactored the CSS structure to use CSS variables instead, creating a consistent theming system that supports both light and dark modes.
-                </p>
-                <p>
-                    The dark mode can be toggled manually. The theme selection is persisted in localStorage to maintain the user's preference across visits.
-                </p>
-                
-                <h3>Automatic Budget Allocation Feature</h3>
-                <p>
-                    I added a completely new page that allows users to set up rules for automatically allocating their income to different budget categories. This includes support for both fixed amounts and percentage-based allocations.
-                </p>
-                <p>
-                    Users can create, edit, and save their allocation rules, making it easier to consistently budget their income according to their financial goals. The system also provides a visual breakdown of the allocations to help users understand how their income is distributed.
-                </p>
-                
-                <h3>CSS Architecture Improvements</h3>
-                <p>
-                    Beyond just adding dark mode, I completely restructured the CSS architecture to improve maintainability. I replaced direct color values with semantic variables (like --text-primary instead of #333333) throughout the application, making future theming changes much simpler.
-                </p>
-                
-                <h3>Convex Database Integration</h3>
-                <p>
-                    I integrated Convex as the database solution, which provided real-time synchronization capabilities. This allowed for instant updates across devices when users make changes to their budget items or allocations.
-                </p>
+                {project.implementationDetails.map((detail) => (
+                    <>
+                        <h3>{detail.title}</h3>
+                        <p>{detail.description}</p>
+                    </>
+                ))}
             </div>
         </section>
     </main>
@@ -260,3 +216,4 @@ const contributions = await fetchGitHubStats();
   pointer-events: none;
 }
 </style>
+```
