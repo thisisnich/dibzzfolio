@@ -3,7 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
 import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
-const projects = await getCollection('beginnerPython') as CollectionEntry<'intermediateWeb'>[];
+const projects = await getCollection('beginnerPython')
 
 ---
 <Layout title = "Python">

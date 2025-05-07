@@ -1,7 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import type { CollectionEntry } from "astro:content";
-const projects = await getCollection('intermediatePython') as CollectionEntry<'intermediateWeb'>[];
+const projects = await getCollection('intermediatePython')
 import ProjectCard from "../../components/ProjectCard.astro";
 import { getCollection } from "astro:content";
 
