@@ -189,7 +189,8 @@ const contributions = await fetchGitHubStats();
                         description={change.description}
                         code={change.code}
                         maxLines={25}
-                        client:visible
+                        language={change.language || 'js'} 
+                        client:load
                     />
                 ))}
             </div>

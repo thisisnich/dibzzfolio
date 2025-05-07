@@ -1,3 +1,4 @@
+
 const project = {
   // Basic Project Info
   title: "Budget Tracker",
@@ -68,6 +69,7 @@ const project = {
   codeChanges: [
     {
       title: "Dark Mode CSS Variables",
+      language: "css",
       description: "Added a responsive dark mode with proper theme detection and toggle functionality.",
       code: `// Added CSS variables for theme colors instead of hard-coded values
 :root {
@@ -116,6 +118,7 @@ const project = {
 }`},
     {
       title: "Dark Mode Toggle Functionality",
+      language: "tsx",
       description: "Added a dark mode toggle switch to the application.",
       code: `'use client';
 
@@ -183,6 +186,7 @@ return (
     {         
       title: "React Components for Budget Allocation",
       description: "Built React components for the new automatic budget allocation feature.",
+      language: "tsx",
       code: `import { CategorySelect } from '@/components/CategorySelect';
 import { evaluateExpression } from '@/lib/evaluateExpressions';
 import type { Allocation } from '@/types/schema';
@@ -329,6 +333,7 @@ return (
     {
       title: "Allocation mutations and queries",
       description: "Implemented Convex queries and mutations for managing budget allocations.",
+      language: "tsx",
       code: `
 // Import helpers and types
 import { SessionIdArg } from 'convex-helpers/server/sessions';

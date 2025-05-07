@@ -19,8 +19,28 @@ const { title } = Astro.props;
 		<link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet'>
 
 	</head>
+
 	<body>
 		<NavBar/>
+		<svg id="Index_Logo" data-name="Index Logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 255.35 176" class="astro-a" aria-hidden="true">
+			<defs>
+				<style>
+					.index-logo-cls-1 {
+						fill: #1F2937;
+						stroke: #1F2937;
+						stroke-miterlimit: 10;
+						opacity: 0.7;
+					}
+				</style>
+			</defs>
+			<polygon class="index-logo-cls-1" points="199.44 169.43 206.67 175.5 128.89 175.5 83.68 137.56 79.5 134.06 72.94 128.56 50.5 109.73 49.84 109.18 .5 67.77 .5 2.5 2.39 4.09 5.41 6.62 44.49 39.42 50.5 44.46 54.06 47.44 57.71 50.5 78.32 67.8 79.5 68.79 81.6 70.55 107.5 92.29 129.5 110.75 136.65 116.75 147.08 125.5 158.33 134.94 199.44 169.43"/>
+			<polygon class="index-logo-cls-1" points="83.53 151.06 112.65 175.5 79.5 175.5 79.5 147.68 83.53 151.06"/>
+			<path class="index-logo-cls-1" d="M254.85,88c0,28.1-13.25,53.11-33.85,69.11-3.55,2.77-7.32,5.27-11.28,7.46l-37.86-31.77-8.7-7.3h3.51c19.41,0,36.94-15.8,38.11-35.17,1.31-21.77-15.95-39.83-37.43-39.83h-37.85v46.76l-8.47-7.11-29.18-24.49-7.27-6.1-5.08-4.26V.5h87.85c3.4,0,6.75.19,10.04.57,43.6,4.98,77.46,42,77.46,86.93Z"/>
+			<polygon class="index-logo-cls-1" points="18.94 4.48 14.2 .5 50.5 .5 50.5 30.97 18.94 4.48"/>
+			<polygon class="index-logo-cls-1" points="49.7 122.67 50.5 123.34 50.5 175.5 .5 175.5 .5 81.38 49.7 122.67"/>
+			<path class="index-logo-cls-1" d="M177.39.5v.57c-3.29-.38-6.64-.57-10.04-.57h10.04Z"/>
+		</svg>
+
 		<slot />
 	</body>
 </html>
@@ -31,14 +51,14 @@ const { title } = Astro.props;
 		--accent-dark: 49, 10, 101;
 		--accent-gradient: linear-gradient(
 			45deg,
-			rgb(var(--accent)),
-			rgb(var(--accent-light)) 30%,
-			white 60%
+			rgba(var(--accent),.4),
+			rgba(var(--accent-light),.2) 30%,
+			rgba(var(--accent-light), .6) 60%
 		);
 	}
 	html {
 		font-family: "Orbitron", sans-serif;
-		background: #13151a;
+		background: #030712;
 	}
 	code {
 		font-family:
@@ -50,5 +70,14 @@ const { title } = Astro.props;
 			Bitstream Vera Sans Mono,
 			Courier New,
 			monospace;
+	}
+	.astro-a {
+		position: absolute;
+		top: 120px;
+		left: 50%;
+		transform: translatex(-50%);
+		width: 512px;
+		height: auto;
+		z-index: -1;
 	}
 </style>

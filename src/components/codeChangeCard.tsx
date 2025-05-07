@@ -1,4 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
+import Prism from 'prismjs';
+// Import language support as needed
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-typescript';
+import 'prismjs/components/prism-jsx';
+import 'prismjs/components/prism-tsx';
+import 'prismjs/components/prism-css';
+import 'prismjs/components/prism-markup'; // HTML
+import 'prismjs/themes/prism-tomorrow.css'; // Choose a theme that works with dark mode
 
 type CodeChangeCardProps = {
   code: string;
@@ -19,6 +28,19 @@ const CodeChangeCard = ({
   const [shouldCollapse, setShouldCollapse] = useState(false);
   const codeRef = useRef<HTMLPreElement>(null);
   
+  // Map common language shorthands to Prism language identifiers
+  const languageMap: Record<string, string> = {
+    'js': 'javascript',
+    'jsx': 'jsx',
+    'ts': 'typescript', 
+    'tsx': 'tsx',
+    'html': 'markup',
+    'css': 'css',
+  };
+  
+  // Get the correct Prism language class
+  const prismLanguage = languageMap[language.toLowerCase()] || language.toLowerCase() || 'javascript';
+
   useEffect(() => {
     // Check if the code block has more lines than the maxLines threshold
     if (codeRef.current) {
@@ -29,6 +51,16 @@ const CodeChangeCard = ({
       setShouldCollapse(approxLines > maxLines);
     }
   }, [maxLines]);
+  
+  useEffect(() => {
+    // Apply syntax highlighting when component mounts or code/language changes
+    if (codeRef.current) {
+      const codeElement = codeRef.current.querySelector('code');
+      if (codeElement) {
+        Prism.highlightElement(codeElement);
+      }
+    }
+  },);
   
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -47,14 +79,13 @@ const CodeChangeCard = ({
         <div className="overflow-x-auto w-full">
           <pre
             ref={codeRef}
-            className={`bg-gray-900 p-4 rounded text-sm font-mono whitespace-pre ${
-              !isExpanded && shouldCollapse ? 'overflow-hidden' : 'overflow-y-auto'
-            }`}
+            className="bg-gray-900 p-4 rounded text-sm font-mono whitespace-pre overflow-x-auto"
             style={{
-              maxHeight: !isExpanded && shouldCollapse ? `${maxLines * 1.5}rem` : 'none'
+              maxHeight: !isExpanded && shouldCollapse ? `${maxLines * 1.5}rem` : 'none',
+              overflowY: !isExpanded && shouldCollapse ? 'hidden' : 'auto'
             }}
           >
-            <code className={language ? `language-${language}` : ''}>
+            <code className={`language-${prismLanguage}`}>
               {code}
             </code>
           </pre>
