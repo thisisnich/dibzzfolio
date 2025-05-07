@@ -22,13 +22,13 @@ const CodeChangeCard = ({
   useEffect(() => {
     // Check if the code block has more lines than the maxLines threshold
     if (codeRef.current) {
-      const lineHeight = parseInt(getComputedStyle(codeRef.current).lineHeight);
+      const lineHeight = Number.parseInt(getComputedStyle(codeRef.current).lineHeight);
       const codeHeight = codeRef.current.scrollHeight;
       const approxLines = Math.ceil(codeHeight / (lineHeight || 20)); // Fallback to 20px if lineHeight is not set
       
       setShouldCollapse(approxLines > maxLines);
     }
-  }, [code, maxLines]);
+  }, [maxLines]);
   
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -43,25 +43,26 @@ const CodeChangeCard = ({
         </div>
       )}
       
-      {/* The key change is here - adding overflow-x-auto to enable horizontal scrolling */}
       <div className="p-4">
-        <div className="overflow-x-auto" style={{ width: '100%' }}>
+        <div className="overflow-x-auto w-full">
           <pre
             ref={codeRef}
-            className={`bg-gray-900 p-4 rounded text-sm font-mono whitespace-pre${
-              !isExpanded && shouldCollapse ? ' max-h-code-collapsed' : ''
+            className={`bg-gray-900 p-4 rounded text-sm font-mono whitespace-pre ${
+              !isExpanded && shouldCollapse ? 'overflow-hidden' : 'overflow-y-auto'
             }`}
             style={{
-              ...((!isExpanded && shouldCollapse) ? { maxHeight: `${maxLines * 1.5}em` } : {}),
-              overflowY: !isExpanded && shouldCollapse ? 'hidden' : 'auto'
+              maxHeight: !isExpanded && shouldCollapse ? `${maxLines * 1.5}rem` : 'none'
             }}
           >
-            <code>{code}</code>
+            <code className={language ? `language-${language}` : ''}>
+              {code}
+            </code>
           </pre>
         </div>
         
         {shouldCollapse && (
           <button
+            type="button"
             onClick={toggleExpand}
             className="mt-2 px-4 py-1 bg-gray-700 hover:bg-gray-600 text-white text-sm rounded transition-colors"
           >
@@ -73,4 +74,4 @@ const CodeChangeCard = ({
   );
 };
 
-export default CodeChangeCard;  
+export default CodeChangeCard;

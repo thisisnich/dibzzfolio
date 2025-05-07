@@ -483,11 +483,11 @@ Users can create, edit, and save their allocation rules, making it easier to con
     },
     {
       title: "CSS Architecture Improvements",
-      description: `Beyond just adding dark mode, I completely restructured the CSS architecture to improve maintainability. I replaced direct color values with semantic variables (like --text-primary instead of #333333) throughout the application, making future theming changes much simpler.`
+      description: 'Beyond just adding dark mode, I completely restructured the CSS architecture to improve maintainability. I replaced direct color values with semantic variables (like --text-primary instead of #333333) throughout the application, making future theming changes much simpler.'
     },
     {
       title: "Convex Database Integration",
-      description: `I integrated Convex as the database solution, which provided real-time synchronization capabilities. This allowed for instant updates across devices when users make changes to their budget items or allocations.`
+      description: 'I integrated Convex as the database solution, which provided real-time synchronization capabilities. This allowed for instant updates across devices when users make changes to their budget items or allocations.'
     }
   ],
   

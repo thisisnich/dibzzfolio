@@ -2,7 +2,7 @@
 import Layout from "../../../layouts/Layout.astro";
 import ProjectCarouselWithTabs from '../../../components/ProjectCarousel.tsx'; 
 import CodeChangeCard from "../../../components/codeChangeCard";
-import project from "../../../content/intermediateWeb/budget.js";
+import project from "../../../content/intermediateWeb/wallpaper.jsx";
 
 // Function to dynamically fetch GitHub stats
 const fetchGitHubStats = async (): Promise<{
@@ -72,6 +72,7 @@ const deletions = userStats.weeks.reduce((sum: number, week: Week) => sum + week
 
 // Fetch GitHub stats
 const contributions = await fetchGitHubStats();
+// console.log("Contributions:", contributions);
 ---
 
 <Layout title={project.title}>
