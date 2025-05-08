@@ -1,3 +1,5 @@
+import language from "react-syntax-highlighter/dist/esm/languages/hljs/1c";
+
 const project = {
     // Basic Project Info
     title: "Project Title",
@@ -175,24 +177,28 @@ const project = {
     implementationDetails: [
       {
         title: "Implementation Detail 1",
+        language: "The language of the code block",
         description: `Detailed explanation of an important implementation aspect of your project. This should provide context about your approach, challenges faced, and how you solved them.
         
   This can include architectural decisions, optimization techniques, or unique solutions to difficult problems.`
       },
       {
         title: "Implementation Detail 2",
+        language: "The language of the code block",
         description: `Detailed explanation of another important implementation aspect of your project. This should highlight your technical skills and problem-solving abilities.
   
   You can describe how you implemented a particular feature, what libraries or technologies you used, and why you made certain technical decisions.`
       },
       {
         title: "Implementation Detail 3",
+        language: "The language of the code block",
         description: `Explanation of a third implementation detail that showcases your technical expertise. This could focus on performance optimizations, accessibility improvements, or other technical aspects of your project.
   
   For example, you might discuss how you improved load times, implemented responsive design, or ensured cross-browser compatibility.`
       },
       {
         title: "Implementation Detail 4",
+        language: "The language of the code block",
         description: `Description of a fourth implementation detail that demonstrates your attention to detail and comprehensive approach to development.
   
   This section can highlight less visible but important aspects of your project, such as error handling, testing strategies, or deployment configurations.`
