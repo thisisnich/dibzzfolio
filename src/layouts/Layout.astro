@@ -40,6 +40,19 @@ const { title } = Astro.props;
 			<polygon class="index-logo-cls-1" points="49.7 122.67 50.5 123.34 50.5 175.5 .5 175.5 .5 81.38 49.7 122.67"/>
 			<path class="index-logo-cls-1" d="M177.39.5v.57c-3.29-.38-6.64-.57-10.04-.57h10.04Z"/>
 		</svg>
+        <picture class="picture">
+  <!-- Mobile (Cloudinary-optimized) -->
+  <source 
+    media="(max-width: 768px)" 
+    srcset="https://res.cloudinary.com/davx3rrjg/image/upload/v1747724812/Ferraclast_0010_nqvdpf.webp" 
+  />
+  
+  <!-- Desktop (your original 4K image) -->
+  <img 
+    src="../../public/images/personal/Ferraclast.webp" 
+    alt="High resolution project" 
+  />
+</picture>
 
 		<slot />
 	</body>
@@ -47,13 +60,13 @@ const { title } = Astro.props;
 <style is:global>
 	:root {
 		--accent: 136, 58, 234;
-		--accent-light: 224, 204, 250;
-		--accent-dark: 49, 10, 101;
+		--accent-light: 174, 154, 200;
+		--accent-dark: 29, 0, 81;
 		--accent-gradient: linear-gradient(
 			45deg,
 			rgba(var(--accent),.4),
-			rgba(var(--accent-light),.2) 30%,
-			rgba(var(--accent-light), .6) 60%
+			rgba(var(--accent-light),.4) 30%,
+			rgba(var(--accent-light), .8) 60%
 		);
 	}
 	html {
@@ -86,4 +99,10 @@ const { title } = Astro.props;
 		}
 		
 	}
+	    .picture {
+        opacity: .7;
+        position: fixed;
+        top: 20px;
+        z-index: -9999;
+    }
 </style>
